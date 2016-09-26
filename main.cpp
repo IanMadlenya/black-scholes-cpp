@@ -22,8 +22,8 @@ float get_price(
 
   /*
    * Forward contract pricing.
-   * price = S * e^(rT) - sum( d[i] * e^(r(T-t[i])) )
-   * Assumes dividend is continuous.
+   * Formula for fwd pricing: F = S * e^(rT) - sum( d[i] * e^(r(T-t[i])) )
+   * However, this assumes that the dividend is continuous.
    */
   if (ins_type == forward_contract) {
     return S * exp(r * T) - ((S*d) * exp(r * T) );
