@@ -45,12 +45,12 @@ double DerivativePricer::cum_norm(double x) {
   const double       A5 = 1.330274429;
   const double RSQRT2PI = 0.39894228040143267793994605993438;
 
-  double K = 1.0 / (1.0 + 0.2316419 * fabs(d));
+  double K = 1.0 / (1.0 + 0.2316419 * fabs(x));
 
-  double cnd = RSQRT2PI * exp(- 0.5 * d * d) *
+  double cnd = RSQRT2PI * exp(- 0.5 * x * x) *
         (K * (A1 + K * (A2 + K * (A3 + K * (A4 + K * A5)))));
 
-  if (d > 0)
+  if (x > 0)
       cnd = 1.0 - cnd;
 
   return cnd;
@@ -65,7 +65,7 @@ float DerivativePricer::getPrice() {
    * Forward contract pricing.
    */
   if (ins_type == forward_contract) {
-    return S * exp(r * T) - ((S*d) * exp(r * T) );
+    return exp(-1*r*T) * (exp((r-d)*T)*S-K);
   }
 
   /*
@@ -74,16 +74,27 @@ float DerivativePricer::getPrice() {
   if (ins_type == call) {
     return S * cum_norm(func_d(1)) - K * exp(-r * T) * cum_norm(func_d(-1));
   }
+
+  /*
+   * Put option ppricing.
+   */
+  if (ins_type == put) {
+    return -1 * S * cum_norm(-1 * func_d(1)) + K * exp(-r * T) * cum_norm(-1 * func_d(-1));
+  }
+
   return 1.0;
 }
 
 
 int main(int argc, char const *argv[]) {
-  DerivativePricer fwd(forward_contract, 1, 0.05, 0.02, 90, 100, 0.1);
-  DerivativePricer call_opt(call, 1, 0.05, 0.02, 90, 100, 0.1);
+  DerivativePricer fwd(forward_contract, 1, 0.05, 0.02, 90, 100, 0.3);
+  DerivativePricer call_opt(call, 1, 0.05, 0.02, 90, 100, 0.3);
+  DerivativePricer put_opt(put, 1, 0.05, 0.02, 90, 100, 0.3);
+
 
   std::cout << "Forward Price: " << fwd.getPrice() << std::endl;
   std::cout << "Call Option: " << call_opt.getPrice() << std::endl;
+  std::cout << "Put Option: " << put_opt.getPrice() << std::endl;
 
   return 0;
 }
