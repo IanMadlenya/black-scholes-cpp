@@ -72,15 +72,18 @@ float DerivativePricer::getPrice() {
    * Call option pricing.
    */
   if (ins_type == call) {
-
+    return S * cum_norm(func_d(1)) - K * exp(-r * T) * cum_norm(func_d(-1));
   }
   return 1.0;
 }
 
 
 int main(int argc, char const *argv[]) {
-  DerivativePricer pricer(forward_contract, 1, 0.05, 0.02, 90, 100, 0.1);
+  DerivativePricer fwd(forward_contract, 1, 0.05, 0.02, 90, 100, 0.1);
+  DerivativePricer call_opt(call, 1, 0.05, 0.02, 90, 100, 0.1);
 
-  std::cout << pricer.getPrice() << std::endl;
+  std::cout << "Forward Price: " << fwd.getPrice() << std::endl;
+  std::cout << "Call Option: " << call_opt.getPrice() << std::endl;
+
   return 0;
 }
