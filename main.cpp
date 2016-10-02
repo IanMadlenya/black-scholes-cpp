@@ -13,21 +13,22 @@ enum InstrumentType {
 class DerivativePricer {
   private:
     InstrumentType ins_type;
-    int T;                    // Time to maturity.
-    float r;                  // Continuously compounding rate.
-    float d;                  // Dividend rate.
-    float K;                  // Strike price.
-    float S;                  // Spot price.
-    float sigma;              // Volatility.
+    double T;                    // Time to maturity.
+    double r;                  // Continuously compounding rate.
+    double d;                  // Dividend rate.
+    double K;                  // Strike price.
+    double S;                  // Spot price.
+    double sigma;              // Volatility.
     double func_d(int sign);   // Needed in black-scholes formula. Takes -1 or 1.
     double cum_norm(double x);  // Cumulative normal function.
 
   public:
-    DerivativePricer(InstrumentType ins_type, float T, float r, float d, float K, float S, float sigma);
+    DerivativePricer(InstrumentType ins_type, double T, double r, double d, double K, double S, double sigma);
     float getPrice();
+    void setType(InstrumentType ins_type);
 };
 
-DerivativePricer::DerivativePricer(InstrumentType _ins_type, float _T, float _r, float _d, float _K, float _S, float _sigma){
+DerivativePricer::DerivativePricer(InstrumentType _ins_type, double _T, double _r, double _d, double _K, double _S, double _sigma){
   ins_type = _ins_type;
   T = _T;
   r = _r;
@@ -65,7 +66,7 @@ float DerivativePricer::getPrice() {
    * Forward contract pricing.
    */
   if (ins_type == forward_contract) {
-    return exp(-1*r*T) * (exp((r-d)*T)*S-K);
+    return exp(-r*T) * (exp((r-d)*T)*S-K);
   }
 
   /*
@@ -79,22 +80,24 @@ float DerivativePricer::getPrice() {
    * Put option ppricing.
    */
   if (ins_type == put) {
-    return -1 * S * cum_norm(-1 * func_d(1)) + K * exp(-r * T) * cum_norm(-1 * func_d(-1));
+    return -S * cum_norm(-func_d(1)) + K * exp(-r * T) * cum_norm(-func_d(-1));
   }
 
   return 1.0;
 }
 
+void DerivativePricer::setType(InstrumentType _ins_type) {
+  ins_type = _ins_type;
+}
 
 int main(int argc, char const *argv[]) {
-  DerivativePricer fwd(forward_contract, 1, 0.05, 0.02, 90, 100, 0.3);
-  DerivativePricer call_opt(call, 1, 0.05, 0.02, 90, 100, 0.3);
-  DerivativePricer put_opt(put, 1, 0.05, 0.02, 90, 100, 0.3);
+  DerivativePricer pricer(forward_contract, 2, 0.05, 0.02, 90, 100, 0.05);
 
-
-  std::cout << "Forward Price: " << fwd.getPrice() << std::endl;
-  std::cout << "Call Option: " << call_opt.getPrice() << std::endl;
-  std::cout << "Put Option: " << put_opt.getPrice() << std::endl;
+  std::cout << "Forward Price: " << pricer.getPrice() << std::endl;
+  pricer.setType(call);
+  std::cout << "Call Option: " << pricer.getPrice() << std::endl;
+  pricer.setType(put);
+  std::cout << "Put Option: " << pricer.getPrice() << std::endl;
 
   return 0;
 }
