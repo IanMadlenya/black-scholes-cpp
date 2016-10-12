@@ -20,11 +20,16 @@ private:
   double S;                  // Spot price.
   double sigma;              // Volatility.
   double func_d(int sign);   // Needed in black-scholes formula. Takes -1 or 1.
-  double cum_norm(double x);  // Cumulative normal function.
+  double cum_norm(double x); // Cumulative normal function.
 public:
   DerivativePricer(InstrumentType ins_type, double T, double r, double d, double K, double S, double sigma);
   float getPrice();
   void setType(InstrumentType ins_type);
+  void setInterestRate(double interestRate);
+  void setDividendRate(double dividendRate);
+  void setStrike(double strike);
+  void setSpot(double spot);
+  void setSigma(double sigma);
 };
 
 #endif

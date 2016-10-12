@@ -62,3 +62,23 @@ float DerivativePricer::getPrice() {
 void DerivativePricer::setType(InstrumentType _ins_type) {
   ins_type = _ins_type;
 }
+
+void DerivativePricer::setInterestRate(double interestRate) {
+  r = interestRate;
+}
+
+void DerivativePricer::setDividendRate(double dividendRate) {
+  d = dividendRate;
+}
+
+void DerivativePricer::setStrike(double strike) {
+  K = strike;
+}
+
+void DerivativePricer::setSpot(double spot) {
+  S = spot;
+}
+
+void DerivativePricer::setSigma(double _sigma) {
+  sigma = _sigma;
+}
