@@ -11,19 +11,8 @@ class DerivativePricerTest : public ::testing::Test {
   }
 };
 
-// The forward contract will have zero valie iff K=e^((r-d)T)*S
-TEST(DerivativePricerTest,ForwardPriceZeroSpecialCase){
-  double T = 20;
-  double r = 0.05;
-  double d = 0.02;
-  double S = 100;
-  double sigma = 0.1;
-  double K = exp((r-d)*T)*S;
-  DerivativePricer pricer(forward_contract,T,r,d,K,S,sigma);
-  double forward_price = pricer.getPrice();
-  EXPECT_EQ(forward_price, 0.0);
-}
 
+// The price of a call minus the price of a put should equal the forward price.
 TEST(DerivativePricerTest,PutCallParity){
   DerivativePricer pricer(forward_contract, 2, 0.05, 0.02, 90, 100, 0.05);
   double forward_price = pricer.getPrice();
