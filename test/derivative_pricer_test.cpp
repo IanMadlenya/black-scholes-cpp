@@ -4,11 +4,9 @@
 #include "gtest/gtest.h"
 
 class DerivativePricerTest : public ::testing::Test {
- protected:
-  virtual void SetUp() {
-  }
-  virtual void TearDown() {
-  }
+};
+
+class DerivativePricerTestWithParam : public ::testing::TestWithParam<double>{
 };
 
 
@@ -27,8 +25,19 @@ TEST(DerivativePricerTest,PutCallParity){
 }
 
 
-//TODO value parameterized tests AS PER
-//https://github.com/google/googletest/blob/48ee8e98abc950abd8541e15550b18f8f6cfb3a9/googletest/docs/V1_5_AdvancedGuide.md#how-to-write-value-parameterized-tests
+// The price of a call should be monotone decreasing with strike.
+TEST_P(DerivativePricerTestWithParam,Strike){
+  DerivativePricer pricer(call, 2, 0.05, 0.02, GetParam(), 100, 0.05);
+  EXPECT_EQ(1,10);
+  // TODO No way to get the 'previous' value of the test to ensure value decreases
+}
+INSTANTIATE_TEST_CASE_P(CallDecreasingWithStrike,
+  DerivativePricerTestWithParam,
+  ::testing::Values(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+);
+
+
+
 // TEST(DerivativePricerTest, CallDecreasingWithStrike){
 //   int strike = 3;
 //   DerivativePricer pricer(call, 2, 0.05, 0.02, 1, 100, 0.05);
