@@ -23,7 +23,7 @@ TEST(DerivativePricerTest,PutCallParity){
   pricer.setType(put);
   double put_price = pricer.getPrice();
 
-  EXPECT_EQ(forward_price, call_price - put_price);
+  EXPECT_FLOAT_EQ(forward_price, call_price - put_price);
 }
 
 
