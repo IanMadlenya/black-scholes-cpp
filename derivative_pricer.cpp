@@ -31,11 +31,7 @@ double DerivativePricer::cum_norm(double x) {
 }
 
 double DerivativePricer::func_d(int sign) {
-  if(sign == 1){
-    return (log(S/K)+(r+(0.5 * sigma * sigma))*T) / (sigma*sqrt(T));
-  } else {
-    return (log(S/K)+(r-(0.5 * sigma * sigma))*T) / (sigma*sqrt(T));
-  }
+  return (log(S/K)+(r+((0.5 * sigma * sigma)*sign)*T)) / (sigma*sqrt(T));
 }
 
 float DerivativePricer::getPrice() {
@@ -50,14 +46,14 @@ float DerivativePricer::getPrice() {
    * Call option pricing.
    */
   if (ins_type == call) {
-    return S * cum_norm(func_d(1)) - K * exp(-r * T) * cum_norm(func_d(2));
+    return S * cum_norm(func_d(1)) - K * exp(-r * T) * cum_norm(func_d(-1));
   }
 
   /*
    * Put option pricing.
    */
   if (ins_type == put) {
-    return -S * cum_norm(-func_d(1)) + K * exp(-r * T) * cum_norm(-func_d(2));
+    return -S * cum_norm(-func_d(1)) + K * exp(-r * T) * cum_norm(-func_d(-1));
   }
 
   return 1.0;
